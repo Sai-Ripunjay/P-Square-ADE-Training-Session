@@ -1,0 +1,21 @@
+{
+	"name": "DS_target_Swithch_sink_parquet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Gen2Lake",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "psqaure/Target Switch/parquet",
+				"fileSystem": "devcontainer"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

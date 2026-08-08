@@ -1,0 +1,15 @@
+{
+	"name": "PsqaureDevADF",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "d688cabd-4766-4c06-ad8a-c1ff9b0520f0",
+		"tenantId": "5830a467-eb5c-45f1-ae45-aaa56af0cb41"
+	}
+}

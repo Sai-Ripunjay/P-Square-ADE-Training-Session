@@ -1,0 +1,72 @@
+{
+	"name": "DS_source_Switch_copy_json",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Gen2Lake",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"jsonsrcfilename": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().jsonsrcfilename",
+					"type": "Expression"
+				},
+				"folderPath": "psqaure/Source Switch",
+				"fileSystem": "devcontainer"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"ItemID": {
+					"type": "integer"
+				},
+				"ProductName": {
+					"type": "string"
+				},
+				"Category": {
+					"type": "string"
+				},
+				"Quantity": {
+					"type": "integer"
+				},
+				"Warehouse": {
+					"type": "string"
+				},
+				"SaleID": {
+					"type": "integer"
+				},
+				"CustomerName": {
+					"type": "string"
+				},
+				"Amount": {
+					"type": "integer"
+				},
+				"SupplierID": {
+					"type": "integer"
+				},
+				"SupplierName": {
+					"type": "string"
+				},
+				"City": {
+					"type": "string"
+				},
+				"Contact": {
+					"type": "string"
+				},
+				"Product": {
+					"type": "string"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,20 @@
+{
+	"name": "DS_adls_json",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Gen2Lake",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "psqaure",
+				"fileSystem": "devcontainer"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

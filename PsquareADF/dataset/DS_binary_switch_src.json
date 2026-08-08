@@ -1,0 +1,19 @@
+{
+	"name": "DS_binary_switch_src",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Gen2Lake",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "psqaure/Source Switch",
+				"fileSystem": "devcontainer"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

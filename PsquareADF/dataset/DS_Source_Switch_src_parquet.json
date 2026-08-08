@@ -1,0 +1,55 @@
+{
+	"name": "DS_Source_Switch_src_parquet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Gen2Lake",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"parquetsrcfilename": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().parquetsrcfilename",
+					"type": "Expression"
+				},
+				"folderPath": "psqaure/Source Switch",
+				"fileSystem": "devcontainer"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "one",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "two",
+				"type": "UTF8"
+			},
+			{
+				"name": "three",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "four",
+				"type": "INT96"
+			},
+			{
+				"name": "five",
+				"type": "INT96"
+			},
+			{
+				"name": "__index_level_0__",
+				"type": "UTF8"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

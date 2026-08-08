@@ -1,0 +1,111 @@
+{
+	"name": "PL_homework_session11",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup Orders Data",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_looup_homework",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Check If Count is greater than 500",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Lookup Orders Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(activity('Lookup Orders Data').output.count, 500)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Order Table Count Less than 500",
+							"description": "Pipeline failed because the Orders table contains 500 or fewer records. Data load to ADLS/Blob was skipped.",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": "record limit has not been achieved yet !",
+								"errorCode": "ORDER_COUNT_LT_500"
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Copy Order Table Rows into ADLS",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "JsonSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "JsonWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_looup_homework",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DS_adls_json",
+									"type": "DatasetReference"
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2026-07-18T17:33:07Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

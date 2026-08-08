@@ -1,0 +1,41 @@
+{
+	"name": "DS_homework_2_src",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Gen2Lake",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "psqaure/source",
+				"fileSystem": "devcontainer"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "cust_id",
+				"type": "String"
+			},
+			{
+				"name": "cust_name",
+				"type": "String"
+			},
+			{
+				"name": "tran_amt",
+				"type": "String"
+			},
+			{
+				"name": "tran_dt",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

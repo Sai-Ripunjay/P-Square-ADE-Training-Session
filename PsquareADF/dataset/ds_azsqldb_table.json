@@ -1,0 +1,17 @@
+{
+	"name": "ds_azsqldb_table",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_azureSqlDb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "emp"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
