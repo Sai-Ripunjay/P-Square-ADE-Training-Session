@@ -1,0 +1,15 @@
+{
+	"name": "sai-psqaure-adf-dev-df",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "b4bd7b37-8595-4d0a-b266-9c1bfe52c893",
+		"tenantId": "5eef6a58-0ec8-4c9a-84a4-f1e48312069c"
+	}
+}
