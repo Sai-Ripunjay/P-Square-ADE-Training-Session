@@ -2563,7 +2563,7 @@
 									"dependsOn": [],
 									"userProperties": [],
 									"typeProperties": {
-										"message": "Record limit has not been achieved ye",
+										"message": "Record limit has not been achieved yet",
 										"errorCode": "ORDER_COUNT_LESS_THAN_500"
 									}
 								}
