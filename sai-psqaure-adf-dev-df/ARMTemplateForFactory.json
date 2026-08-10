@@ -2508,7 +2508,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pl_s11_hw01_adf_lookup_scenario')]",
+			"name": "[concat(parameters('factoryName'), '/pl_s11_hw01_lookup_email')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
