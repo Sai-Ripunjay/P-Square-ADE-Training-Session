@@ -1,0 +1,16 @@
+{
+	"name": "DS_AzureSQL_Orders",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AzureSQL_Orders",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "psquare",
+			"table": "Orders"
+		}
+	}
+}
