@@ -137,6 +137,34 @@
 									"type": "DatasetReference"
 								}
 							]
+						},
+						{
+							"name": "act_web_send_success_email",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "act_copy_orders_to_adls",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "POST",
+								"headers": {
+									"Content-Type": "application/json"
+								},
+								"url": "https://prod-17.northcentralus.logic.azure.com:443/workflows/1fb472c1a69f44fabbbf6494191b7141/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=7qwdjNgJCvW1uqJ3Os_pF6e0iU_jRMJLNXqP3po8lHo",
+								"body": "@concat('{\"status\":\"success\",\"pipelineName\":\"',pipeline().Pipeline,'\",\"runId\":\"',pipeline().RunId,'\"}')"
+							}
 						}
 					]
 				}
