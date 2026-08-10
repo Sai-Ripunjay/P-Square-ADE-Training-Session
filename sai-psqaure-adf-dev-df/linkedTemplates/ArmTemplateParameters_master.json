@@ -17,6 +17,9 @@
 		"LS_AzureSQL_Orders_password": {
 			"value": ""
 		},
+		"LS_ADLSGen2_Orders_accountKey": {
+			"value": ""
+		},
 		"LS_Gen2Lake_properties_typeProperties_url": {
 			"value": "https://strgactpsqaureadfdev.dfs.core.windows.net/"
 		},
@@ -28,6 +31,9 @@
 		},
 		"LS_AzureSQL_Orders_properties_typeProperties_userName": {
 			"value": "jaysai"
+		},
+		"LS_ADLSGen2_Orders_properties_typeProperties_url": {
+			"value": "https://psquaredevadls.dfs.core.windows.net/"
 		},
 		"containerUri": {
 			"value": ""

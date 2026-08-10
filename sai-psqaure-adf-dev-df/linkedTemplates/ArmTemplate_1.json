@@ -13,6 +13,62 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/DS_source_Switch_src_csv')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_Gen2Lake",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"csvsrcfilename": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().csvsrcfilename",
+							"type": "Expression"
+						},
+						"folderPath": "psqaure/Source Switch",
+						"fileSystem": "devcontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "CustomerID",
+						"type": "String"
+					},
+					{
+						"name": "CustomerName",
+						"type": "String"
+					},
+					{
+						"name": "City",
+						"type": "String"
+					},
+					{
+						"name": "Email",
+						"type": "String"
+					},
+					{
+						"name": "Phone",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DS_switch_copy_src_binary')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -176,6 +232,25 @@
 					"quoteChar": "\""
 				},
 				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_AzureSQL_Orders')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSQL_Orders",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "psquare",
+					"table": "Orders"
+				}
 			},
 			"dependsOn": []
 		},
@@ -769,6 +844,7 @@
 				"lastPublishTime": "2026-08-05T19:09:15Z"
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_source_Switch_src_csv')]",
 				"[concat(variables('factoryId'), '/datasets/Ds_target_Switch_sink_csv')]",
 				"[concat(variables('factoryId'), '/datasets/Ds_target_Switch_sink_json')]",
 				"[concat(variables('factoryId'), '/datasets/DS_switch_copy_src_binary')]",
@@ -1493,6 +1569,7 @@
 				"lastPublishTime": "2026-08-05T19:09:15Z"
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_source_Switch_src_csv')]",
 				"[concat(variables('factoryId'), '/datasets/Ds_target_Switch_sink_csv')]",
 				"[concat(variables('factoryId'), '/datasets/Ds_target_Switch_sink_json')]",
 				"[concat(variables('factoryId'), '/datasets/DS_target_Swithch_sink_parquet')]",
@@ -1618,6 +1695,48 @@
 				"lastPublishTime": "2026-07-18T17:33:07Z"
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_s11_hw01_adf_lookup_scenario')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "act_lookup_order_count",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "DS_AzureSQL_Orders",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_AzureSQL_Orders')]"
+			]
 		}
 	]
 }
