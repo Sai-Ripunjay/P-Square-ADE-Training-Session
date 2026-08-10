@@ -48,11 +48,42 @@
 						{
 							"name": "act_fail_record_limit_not_achieved",
 							"type": "Fail",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "act_web_send_record_limit_email",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"userProperties": [],
 							"typeProperties": {
 								"message": "Record limit has not been achieved yet",
 								"errorCode": "ORDER_COUNT_LESS_THAN_500"
+							}
+						},
+						{
+							"name": "act_web_send_record_limit_email",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "POST",
+								"headers": {
+									"Content-Type": "application/json"
+								},
+								"url": "https://prod-14.centralindia.logic.azure.com:443/workflows/a372e456268046eab1259e1df930417d/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=IoXIZcGDBjt8DBtCE-DuQP1zykmNpcixWAP_oAwQASI",
+								"body": {
+									"value": "@concat(\n'{\"receiver\":\"saiazurejobpracticegmail.com\",\"subject\":\"ADF Alert: Order record limit not achieved\",\"message\":\"Record limit has not been achieved yet.\",\"pipelineName\":\"',\npipeline().Pipeline,\n'\",\"runId\":\"',\npipeline().RunId,\n'\"}'\n)",
+									"type": "Expression"
+								}
 							}
 						}
 					],
