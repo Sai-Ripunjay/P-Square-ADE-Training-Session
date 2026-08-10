@@ -44,6 +44,18 @@
 						"value": "@greater(activity('act_lookup_order_count').output.count, 500)",
 						"type": "Expression"
 					},
+					"ifFalseActivities": [
+						{
+							"name": "act_fail_record_limit_not_achieved",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": "Record limit has not been achieved ye",
+								"errorCode": "ORDER_COUNT_LESS_THAN_500"
+							}
+						}
+					],
 					"ifTrueActivities": [
 						{
 							"name": "act_copy_orders_to_adls",
