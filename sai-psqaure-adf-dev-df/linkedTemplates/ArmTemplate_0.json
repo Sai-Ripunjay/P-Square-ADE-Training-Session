@@ -7,6 +7,14 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "sai-psqaure-adf-dev-df"
 		},
+		"LS_ADLSGen2_Orders_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'LS_ADLSGen2_Orders'"
+		},
+		"LS_AzureSQL_Orders_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'LS_AzureSQL_Orders'"
+		},
 		"LS_Gen2Lake_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'LS_Gen2Lake'"
@@ -19,17 +27,9 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_ablob_source'"
 		},
-		"LS_AzureSQL_Orders_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'LS_AzureSQL_Orders'"
-		},
-		"LS_ADLSGen2_Orders_accountKey": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'LS_ADLSGen2_Orders'"
-		},
-		"LS_Gen2Lake_properties_typeProperties_url": {
+		"LS_ADLSGen2_Orders_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "https://strgactpsqaureadfdev.dfs.core.windows.net/"
+			"defaultValue": "https://psquaredevadls.dfs.core.windows.net/"
 		},
 		"LS_AzureSQL_Orders_properties_typeProperties_server": {
 			"type": "string",
@@ -43,15 +43,54 @@
 			"type": "string",
 			"defaultValue": "jaysai"
 		},
-		"LS_ADLSGen2_Orders_properties_typeProperties_url": {
+		"LS_Gen2Lake_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "https://psquaredevadls.dfs.core.windows.net/"
+			"defaultValue": "https://strgactpsqaureadfdev.dfs.core.windows.net/"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_ADLSGen2_Orders')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('LS_ADLSGen2_Orders_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('LS_ADLSGen2_Orders_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_AzureSQL_Orders')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('LS_AzureSQL_Orders_properties_typeProperties_server')]",
+					"database": "[parameters('LS_AzureSQL_Orders_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('LS_AzureSQL_Orders_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('LS_AzureSQL_Orders_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/LS_Gen2Lake')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
@@ -96,43 +135,25 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/LS_AzureSQL_Orders')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"name": "[concat(parameters('factoryName'), '/DS_AzureSQL_Orders')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSQL_Orders",
+					"type": "LinkedServiceReference"
+				},
 				"annotations": [],
-				"type": "AzureSqlDatabase",
+				"type": "AzureSqlTable",
+				"schema": [],
 				"typeProperties": {
-					"server": "[parameters('LS_AzureSQL_Orders_properties_typeProperties_server')]",
-					"database": "[parameters('LS_AzureSQL_Orders_properties_typeProperties_database')]",
-					"encrypt": "mandatory",
-					"trustServerCertificate": false,
-					"authenticationType": "SQL",
-					"userName": "[parameters('LS_AzureSQL_Orders_properties_typeProperties_userName')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('LS_AzureSQL_Orders_password')]"
-					}
+					"schema": "psquare",
+					"table": "Orders"
 				}
 			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/LS_ADLSGen2_Orders')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobFS",
-				"typeProperties": {
-					"url": "[parameters('LS_ADLSGen2_Orders_properties_typeProperties_url')]",
-					"accountKey": {
-						"type": "SecureString",
-						"value": "[parameters('LS_ADLSGen2_Orders_accountKey')]"
-					}
-				}
-			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AzureSQL_Orders')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/DS_Source_Switch_src_parquet')]",
@@ -243,6 +264,31 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/LS_Gen2Lake')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_adls_orders_parquet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_ADLSGen2_Orders",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "orders",
+						"fileSystem": "raw"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_ADLSGen2_Orders')]"
 			]
 		},
 		{
@@ -641,141 +687,6 @@
 						"type": "String"
 					}
 				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_Gen2Lake')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_looup_homework')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_azureSqlDb",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "OrderID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "CustomerID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "ProductName",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Quantity",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "UnitPrice",
-						"type": "decimal",
-						"precision": 10,
-						"scale": 2
-					},
-					{
-						"name": "PhoneNumber",
-						"type": "varchar"
-					},
-					{
-						"name": "City",
-						"type": "nvarchar"
-					},
-					{
-						"name": "OrderDate",
-						"type": "date"
-					}
-				],
-				"typeProperties": {
-					"schema": "psquare",
-					"table": "Orders"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_azureSqlDb')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_source_Switch_copy_json')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_Gen2Lake",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"jsonsrcfilename": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@dataset().jsonsrcfilename",
-							"type": "Expression"
-						},
-						"folderPath": "psqaure/Source Switch",
-						"fileSystem": "devcontainer"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"ItemID": {
-							"type": "integer"
-						},
-						"ProductName": {
-							"type": "string"
-						},
-						"Category": {
-							"type": "string"
-						},
-						"Quantity": {
-							"type": "integer"
-						},
-						"Warehouse": {
-							"type": "string"
-						},
-						"SaleID": {
-							"type": "integer"
-						},
-						"CustomerName": {
-							"type": "string"
-						},
-						"Amount": {
-							"type": "integer"
-						},
-						"SupplierID": {
-							"type": "integer"
-						},
-						"SupplierName": {
-							"type": "string"
-						},
-						"City": {
-							"type": "string"
-						},
-						"Contact": {
-							"type": "string"
-						},
-						"Product": {
-							"type": "string"
-						}
-					}
-				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/LS_Gen2Lake')]"

@@ -7,6 +7,14 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "sai-psqaure-adf-dev-df"
 		},
+		"LS_ADLSGen2_Orders_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'LS_ADLSGen2_Orders'"
+		},
+		"LS_AzureSQL_Orders_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'LS_AzureSQL_Orders'"
+		},
 		"LS_Gen2Lake_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'LS_Gen2Lake'"
@@ -19,17 +27,9 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_ablob_source'"
 		},
-		"LS_AzureSQL_Orders_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'LS_AzureSQL_Orders'"
-		},
-		"LS_ADLSGen2_Orders_accountKey": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'LS_ADLSGen2_Orders'"
-		},
-		"LS_Gen2Lake_properties_typeProperties_url": {
+		"LS_ADLSGen2_Orders_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "https://strgactpsqaureadfdev.dfs.core.windows.net/"
+			"defaultValue": "https://psquaredevadls.dfs.core.windows.net/"
 		},
 		"LS_AzureSQL_Orders_properties_typeProperties_server": {
 			"type": "string",
@@ -43,9 +43,9 @@
 			"type": "string",
 			"defaultValue": "jaysai"
 		},
-		"LS_ADLSGen2_Orders_properties_typeProperties_url": {
+		"LS_Gen2Lake_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "https://psquaredevadls.dfs.core.windows.net/"
+			"defaultValue": "https://strgactpsqaureadfdev.dfs.core.windows.net/"
 		},
 		"containerUri": {
 			"type": "string",
@@ -74,6 +74,12 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"LS_ADLSGen2_Orders_accountKey": {
+						"value": "[parameters('LS_ADLSGen2_Orders_accountKey')]"
+					},
+					"LS_AzureSQL_Orders_password": {
+						"value": "[parameters('LS_AzureSQL_Orders_password')]"
+					},
 					"LS_Gen2Lake_accountKey": {
 						"value": "[parameters('LS_Gen2Lake_accountKey')]"
 					},
@@ -83,14 +89,8 @@
 					"ls_ablob_source_connectionString": {
 						"value": "[parameters('ls_ablob_source_connectionString')]"
 					},
-					"LS_AzureSQL_Orders_password": {
-						"value": "[parameters('LS_AzureSQL_Orders_password')]"
-					},
-					"LS_ADLSGen2_Orders_accountKey": {
-						"value": "[parameters('LS_ADLSGen2_Orders_accountKey')]"
-					},
-					"LS_Gen2Lake_properties_typeProperties_url": {
-						"value": "[parameters('LS_Gen2Lake_properties_typeProperties_url')]"
+					"LS_ADLSGen2_Orders_properties_typeProperties_url": {
+						"value": "[parameters('LS_ADLSGen2_Orders_properties_typeProperties_url')]"
 					},
 					"LS_AzureSQL_Orders_properties_typeProperties_server": {
 						"value": "[parameters('LS_AzureSQL_Orders_properties_typeProperties_server')]"
@@ -101,8 +101,8 @@
 					"LS_AzureSQL_Orders_properties_typeProperties_userName": {
 						"value": "[parameters('LS_AzureSQL_Orders_properties_typeProperties_userName')]"
 					},
-					"LS_ADLSGen2_Orders_properties_typeProperties_url": {
-						"value": "[parameters('LS_ADLSGen2_Orders_properties_typeProperties_url')]"
+					"LS_Gen2Lake_properties_typeProperties_url": {
+						"value": "[parameters('LS_Gen2Lake_properties_typeProperties_url')]"
 					}
 				}
 			},

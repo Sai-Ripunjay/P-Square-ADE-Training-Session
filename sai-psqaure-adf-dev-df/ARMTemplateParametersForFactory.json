@@ -5,6 +5,12 @@
 		"factoryName": {
 			"value": "sai-psqaure-adf-dev-df"
 		},
+		"LS_ADLSGen2_Orders_accountKey": {
+			"value": ""
+		},
+		"LS_AzureSQL_Orders_password": {
+			"value": ""
+		},
 		"LS_Gen2Lake_accountKey": {
 			"value": ""
 		},
@@ -14,14 +20,8 @@
 		"ls_ablob_source_connectionString": {
 			"value": ""
 		},
-		"LS_AzureSQL_Orders_password": {
-			"value": ""
-		},
-		"LS_ADLSGen2_Orders_accountKey": {
-			"value": ""
-		},
-		"LS_Gen2Lake_properties_typeProperties_url": {
-			"value": "https://strgactpsqaureadfdev.dfs.core.windows.net/"
+		"LS_ADLSGen2_Orders_properties_typeProperties_url": {
+			"value": "https://psquaredevadls.dfs.core.windows.net/"
 		},
 		"LS_AzureSQL_Orders_properties_typeProperties_server": {
 			"value": "saipsquareadfdevsqlser.database.windows.net"
@@ -32,8 +32,8 @@
 		"LS_AzureSQL_Orders_properties_typeProperties_userName": {
 			"value": "jaysai"
 		},
-		"LS_ADLSGen2_Orders_properties_typeProperties_url": {
-			"value": "https://psquaredevadls.dfs.core.windows.net/"
+		"LS_Gen2Lake_properties_typeProperties_url": {
+			"value": "https://strgactpsqaureadfdev.dfs.core.windows.net/"
 		}
 	}
 }

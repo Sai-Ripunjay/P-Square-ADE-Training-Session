@@ -13,6 +13,137 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/DS_looup_homework')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_azureSqlDb",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "OrderID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CustomerID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ProductName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Quantity",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "UnitPrice",
+						"type": "decimal",
+						"precision": 10,
+						"scale": 2
+					},
+					{
+						"name": "PhoneNumber",
+						"type": "varchar"
+					},
+					{
+						"name": "City",
+						"type": "nvarchar"
+					},
+					{
+						"name": "OrderDate",
+						"type": "date"
+					}
+				],
+				"typeProperties": {
+					"schema": "psquare",
+					"table": "Orders"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_source_Switch_copy_json')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_Gen2Lake",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"jsonsrcfilename": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().jsonsrcfilename",
+							"type": "Expression"
+						},
+						"folderPath": "psqaure/Source Switch",
+						"fileSystem": "devcontainer"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"ItemID": {
+							"type": "integer"
+						},
+						"ProductName": {
+							"type": "string"
+						},
+						"Category": {
+							"type": "string"
+						},
+						"Quantity": {
+							"type": "integer"
+						},
+						"Warehouse": {
+							"type": "string"
+						},
+						"SaleID": {
+							"type": "integer"
+						},
+						"CustomerName": {
+							"type": "string"
+						},
+						"Amount": {
+							"type": "integer"
+						},
+						"SupplierID": {
+							"type": "integer"
+						},
+						"SupplierName": {
+							"type": "string"
+						},
+						"City": {
+							"type": "string"
+						},
+						"Contact": {
+							"type": "string"
+						},
+						"Product": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DS_source_Switch_src_csv')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -230,48 +361,6 @@
 					"escapeChar": "\\",
 					"firstRowAsHeader": true,
 					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_AzureSQL_Orders')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_AzureSQL_Orders",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "psquare",
-					"table": "Orders"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_adls_orders_parquet')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_ADLSGen2_Orders",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": "orders",
-						"fileSystem": "raw"
-					},
-					"compressionCodec": "snappy"
 				},
 				"schema": []
 			},
@@ -869,6 +958,7 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/DS_source_Switch_src_csv')]",
 				"[concat(variables('factoryId'), '/datasets/Ds_target_Switch_sink_csv')]",
+				"[concat(variables('factoryId'), '/datasets/DS_source_Switch_copy_json')]",
 				"[concat(variables('factoryId'), '/datasets/Ds_target_Switch_sink_json')]",
 				"[concat(variables('factoryId'), '/datasets/DS_switch_copy_src_binary')]",
 				"[concat(variables('factoryId'), '/datasets/DS_target_Switch_sink_binary')]"
@@ -1594,6 +1684,7 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/DS_source_Switch_src_csv')]",
 				"[concat(variables('factoryId'), '/datasets/Ds_target_Switch_sink_csv')]",
+				"[concat(variables('factoryId'), '/datasets/DS_source_Switch_copy_json')]",
 				"[concat(variables('factoryId'), '/datasets/Ds_target_Switch_sink_json')]",
 				"[concat(variables('factoryId'), '/datasets/DS_target_Swithch_sink_parquet')]",
 				"[concat(variables('factoryId'), '/datasets/DS_switch_copy_src_binary')]",
@@ -1717,7 +1808,9 @@
 				"annotations": [],
 				"lastPublishTime": "2026-07-18T17:33:07Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_looup_homework')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/pl_s11_hw01_lookup_email')]",
@@ -1863,6 +1956,37 @@
 											"parameters": {}
 										}
 									]
+								},
+								{
+									"name": "act_web_send_success_email",
+									"type": "WebActivity",
+									"dependsOn": [
+										{
+											"activity": "act_copy_orders_to_adls",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"method": "POST",
+										"headers": {
+											"Content-Type": "application/json"
+										},
+										"url": "https://prod-17.northcentralus.logic.azure.com:443/workflows/1fb472c1a69f44fabbbf6494191b7141/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=7qwdjNgJCvW1uqJ3Os_pF6e0iU_jRMJLNXqP3po8lHo",
+										"body": {
+											"value": "@concat('{\"status\":\"success\",\"pipelineName\":\"',pipeline().Pipeline,'\",\"runId\":\"',pipeline().RunId,'\"}')",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
@@ -1873,10 +1997,7 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DS_AzureSQL_Orders')]",
-				"[concat(variables('factoryId'), '/datasets/DS_adls_orders_parquet')]"
-			]
+			"dependsOn": []
 		}
 	]
 }
