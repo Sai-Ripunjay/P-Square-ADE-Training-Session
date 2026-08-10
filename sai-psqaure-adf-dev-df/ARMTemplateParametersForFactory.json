@@ -1,0 +1,33 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "sai-psqaure-adf-dev-df"
+		},
+		"LS_Gen2Lake_accountKey": {
+			"value": ""
+		},
+		"LS_azureSqlDb_connectionString": {
+			"value": ""
+		},
+		"ls_ablob_source_connectionString": {
+			"value": ""
+		},
+		"LS_AzureSQL_Orders_password": {
+			"value": ""
+		},
+		"LS_Gen2Lake_properties_typeProperties_url": {
+			"value": "https://strgactpsqaureadfdev.dfs.core.windows.net/"
+		},
+		"LS_AzureSQL_Orders_properties_typeProperties_server": {
+			"value": "saipsquareadfdevsqlser.database.windows.net"
+		},
+		"LS_AzureSQL_Orders_properties_typeProperties_database": {
+			"value": "psquareadfsqldb"
+		},
+		"LS_AzureSQL_Orders_properties_typeProperties_userName": {
+			"value": "jaysai"
+		}
+	}
+}
