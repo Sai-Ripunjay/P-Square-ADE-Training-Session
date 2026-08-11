@@ -27,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_ablob_source'"
 		},
+		"ls_psqaure_ablob_dev_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ls_psqaure_ablob_dev'"
+		},
 		"LS_ADLSGen2_Orders_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://psquaredevadls.dfs.core.windows.net/"
@@ -130,6 +134,19 @@
 				"type": "AzureBlobStorage",
 				"typeProperties": {
 					"connectionString": "[parameters('ls_ablob_source_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_psqaure_ablob_dev')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('ls_psqaure_ablob_dev_connectionString')]"
 				}
 			},
 			"dependsOn": []
@@ -605,60 +622,6 @@
 						"type": "AzureBlobFSLocation",
 						"fileName": {
 							"value": "@dataset().filename",
-							"type": "Expression"
-						},
-						"folderPath": "psqaure/source",
-						"fileSystem": "devcontainer"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "cust_id",
-						"type": "String"
-					},
-					{
-						"name": "cust_name",
-						"type": "String"
-					},
-					{
-						"name": "tran_amt",
-						"type": "String"
-					},
-					{
-						"name": "tran_dt",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_Gen2Lake')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_homework_filter_copy_src')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_Gen2Lake",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"src_file_name": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@dataset().src_file_name",
 							"type": "Expression"
 						},
 						"folderPath": "psqaure/source",

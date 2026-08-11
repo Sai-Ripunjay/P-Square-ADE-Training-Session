@@ -20,6 +20,9 @@
 		"ls_ablob_source_connectionString": {
 			"value": ""
 		},
+		"ls_psqaure_ablob_dev_connectionString": {
+			"value": ""
+		},
 		"LS_ADLSGen2_Orders_properties_typeProperties_url": {
 			"value": "https://psquaredevadls.dfs.core.windows.net/"
 		},

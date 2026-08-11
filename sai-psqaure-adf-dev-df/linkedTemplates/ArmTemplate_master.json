@@ -27,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_ablob_source'"
 		},
+		"ls_psqaure_ablob_dev_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ls_psqaure_ablob_dev'"
+		},
 		"LS_ADLSGen2_Orders_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://psquaredevadls.dfs.core.windows.net/"
@@ -89,6 +93,9 @@
 					"ls_ablob_source_connectionString": {
 						"value": "[parameters('ls_ablob_source_connectionString')]"
 					},
+					"ls_psqaure_ablob_dev_connectionString": {
+						"value": "[parameters('ls_psqaure_ablob_dev_connectionString')]"
+					},
 					"LS_ADLSGen2_Orders_properties_typeProperties_url": {
 						"value": "[parameters('LS_ADLSGen2_Orders_properties_typeProperties_url')]"
 					},
@@ -126,6 +133,26 @@
 			},
 			"dependsOn": [
 				"[resourceId('Microsoft.Resources/deployments', 'sai-psqaure-adf-dev-df_ArmTemplate_0')]"
+			]
+		},
+		{
+			"name": "sai-psqaure-adf-dev-df_ArmTemplate_2",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_2.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'sai-psqaure-adf-dev-df_ArmTemplate_1')]"
 			]
 		}
 	]
