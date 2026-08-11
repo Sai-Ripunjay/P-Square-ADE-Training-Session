@@ -1,0 +1,16 @@
+{
+	"name": "DS_azureSQL_sink_fault",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AzureSQL_Orders",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "fault",
+			"table": "Orders"
+		}
+	}
+}

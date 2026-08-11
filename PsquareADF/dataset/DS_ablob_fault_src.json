@@ -1,0 +1,23 @@
+{
+	"name": "DS_ablob_fault_src",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_psqaure_ablob_dev",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "orders_invalid_amount.csv",
+				"container": "input"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
