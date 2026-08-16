@@ -23,6 +23,12 @@
 		"ls_psqaure_ablob_dev_connectionString": {
 			"value": ""
 		},
+		"ls_blob_storage_connectionString": {
+			"value": ""
+		},
+		"ls_azure_sql_database_password": {
+			"value": ""
+		},
 		"LS_ADLSGen2_Orders_properties_typeProperties_url": {
 			"value": "https://psquaredevadls.dfs.core.windows.net/"
 		},
@@ -37,6 +43,15 @@
 		},
 		"LS_Gen2Lake_properties_typeProperties_url": {
 			"value": "https://strgactpsqaureadfdev.dfs.core.windows.net/"
+		},
+		"ls_azure_sql_database_properties_typeProperties_server": {
+			"value": "saipsquareadfdevsqlser.database.windows.net"
+		},
+		"ls_azure_sql_database_properties_typeProperties_database": {
+			"value": "psquareadfsqldb"
+		},
+		"ls_azure_sql_database_properties_typeProperties_userName": {
+			"value": "jaysai"
 		}
 	}
 }

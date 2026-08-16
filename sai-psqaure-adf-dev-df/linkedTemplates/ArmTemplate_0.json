@@ -31,6 +31,14 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_psqaure_ablob_dev'"
 		},
+		"ls_blob_storage_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ls_blob_storage'"
+		},
+		"ls_azure_sql_database_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'ls_azure_sql_database'"
+		},
 		"LS_ADLSGen2_Orders_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://psquaredevadls.dfs.core.windows.net/"
@@ -50,6 +58,18 @@
 		"LS_Gen2Lake_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://strgactpsqaureadfdev.dfs.core.windows.net/"
+		},
+		"ls_azure_sql_database_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "saipsquareadfdevsqlser.database.windows.net"
+		},
+		"ls_azure_sql_database_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "psquareadfsqldb"
+		},
+		"ls_azure_sql_database_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "jaysai"
 		}
 	},
 	"variables": {
@@ -147,6 +167,41 @@
 				"type": "AzureBlobStorage",
 				"typeProperties": {
 					"connectionString": "[parameters('ls_psqaure_ablob_dev_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_blob_storage')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('ls_blob_storage_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_azure_sql_database')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('ls_azure_sql_database_properties_typeProperties_server')]",
+					"database": "[parameters('ls_azure_sql_database_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('ls_azure_sql_database_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('ls_azure_sql_database_password')]"
+					}
 				}
 			},
 			"dependsOn": []
@@ -260,6 +315,34 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DS_ablob_fault_src')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_psqaure_ablob_dev",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "orders_invalid_amount.csv",
+						"container": "input"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_psqaure_ablob_dev')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DS_adls_json')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -306,6 +389,27 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/LS_ADLSGen2_Orders')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_azureSQL_sink_fault')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSQL_Orders",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "fault",
+					"table": "Orders"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AzureSQL_Orders')]"
 			]
 		},
 		{
@@ -461,192 +565,6 @@
 				"schema": [
 					{
 						"name": ".",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_Gen2Lake')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_homework_2_filter_src')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_Gen2Lake",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": "psqaure/source",
-						"fileSystem": "devcontainer"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "cust_id",
-						"type": "String"
-					},
-					{
-						"name": "cust_name",
-						"type": "String"
-					},
-					{
-						"name": "tran_amt",
-						"type": "String"
-					},
-					{
-						"name": "tran_dt",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_Gen2Lake')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_homework_2_sink')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_Gen2Lake",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"sink_file_nm": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@dataset().sink_file_nm",
-							"type": "Expression"
-						},
-						"folderPath": "psqaure/destination",
-						"fileSystem": "devcontainer"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": ".",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_Gen2Lake')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_homework_2_src')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_Gen2Lake",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": "psqaure/source",
-						"fileSystem": "devcontainer"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "cust_id",
-						"type": "String"
-					},
-					{
-						"name": "cust_name",
-						"type": "String"
-					},
-					{
-						"name": "tran_amt",
-						"type": "String"
-					},
-					{
-						"name": "tran_dt",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_Gen2Lake')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_homework_2_src_copy')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_Gen2Lake",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"filename": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@dataset().filename",
-							"type": "Expression"
-						},
-						"folderPath": "psqaure/source",
-						"fileSystem": "devcontainer"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "cust_id",
-						"type": "String"
-					},
-					{
-						"name": "cust_name",
-						"type": "String"
-					},
-					{
-						"name": "tran_amt",
-						"type": "String"
-					},
-					{
-						"name": "tran_dt",
 						"type": "String"
 					}
 				]

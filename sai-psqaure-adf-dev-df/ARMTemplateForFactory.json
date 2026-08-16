@@ -31,6 +31,14 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_psqaure_ablob_dev'"
 		},
+		"ls_blob_storage_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ls_blob_storage'"
+		},
+		"ls_azure_sql_database_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'ls_azure_sql_database'"
+		},
 		"LS_ADLSGen2_Orders_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://psquaredevadls.dfs.core.windows.net/"
@@ -50,6 +58,18 @@
 		"LS_Gen2Lake_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://strgactpsqaureadfdev.dfs.core.windows.net/"
+		},
+		"ls_azure_sql_database_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "saipsquareadfdevsqlser.database.windows.net"
+		},
+		"ls_azure_sql_database_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "psquareadfsqldb"
+		},
+		"ls_azure_sql_database_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "jaysai"
 		}
 	},
 	"variables": {
@@ -1523,6 +1543,77 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/pl_copy_orders_blob_to_sql_fault')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy Data",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_ablob_fault_src",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_azureSQL_sink_fault",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_ablob_fault_src')]",
+				"[concat(variables('factoryId'), '/datasets/DS_azureSQL_sink_fault')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/pl_s11_hw01_lookup_email')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1821,6 +1912,34 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DS_ablob_fault_src')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_psqaure_ablob_dev",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "orders_invalid_amount.csv",
+						"container": "input"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_psqaure_ablob_dev')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DS_adls_json')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1867,6 +1986,27 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/LS_ADLSGen2_Orders')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_azureSQL_sink_fault')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_AzureSQL_Orders",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "fault",
+					"table": "Orders"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_AzureSQL_Orders')]"
 			]
 		},
 		{
@@ -2727,13 +2867,61 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pl_copy_orders_blob_to_sql_fault')]",
+			"name": "[concat(parameters('factoryName'), '/ls_psqaure_ablob_dev')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('ls_psqaure_ablob_dev_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_blob_storage')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('ls_blob_storage_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_azure_sql_database')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('ls_azure_sql_database_properties_typeProperties_server')]",
+					"database": "[parameters('ls_azure_sql_database_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('ls_azure_sql_database_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('ls_azure_sql_database_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_copy_incompatible_datatype_HM04')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "Copy Data",
+						"name": "Copy from aBlob to Sqldb",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -2773,14 +2961,14 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "DS_ablob_fault_src",
+								"referenceName": "ds_blob_orders_csv",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
 						],
 						"outputs": [
 							{
-								"referenceName": "DS_azureSQL_sink_fault",
+								"referenceName": "ds_sql_fault_orders",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -2793,30 +2981,17 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DS_ablob_fault_src')]",
-				"[concat(variables('factoryId'), '/datasets/DS_azureSQL_sink_fault')]"
+				"[concat(variables('factoryId'), '/datasets/ds_blob_orders_csv')]",
+				"[concat(variables('factoryId'), '/datasets/ds_sql_fault_orders')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ls_psqaure_ablob_dev')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobStorage",
-				"typeProperties": {
-					"connectionString": "[parameters('ls_psqaure_ablob_dev_connectionString')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_ablob_fault_src')]",
+			"name": "[concat(parameters('factoryName'), '/ds_blob_orders_csv')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "ls_psqaure_ablob_dev",
+					"referenceName": "ls_blob_storage",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
@@ -2824,8 +2999,8 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "orders_invalid_amount.csv",
-						"container": "input"
+						"fileName": "orders_incompatible.csv",
+						"container": "source"
 					},
 					"columnDelimiter": ",",
 					"escapeChar": "\\",
@@ -2835,16 +3010,16 @@
 				"schema": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_psqaure_ablob_dev')]"
+				"[concat(variables('factoryId'), '/linkedServices/ls_blob_storage')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DS_azureSQL_sink_fault')]",
+			"name": "[concat(parameters('factoryName'), '/ds_sql_fault_orders')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "LS_AzureSQL_Orders",
+					"referenceName": "ls_azure_sql_database",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
@@ -2856,7 +3031,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_AzureSQL_Orders')]"
+				"[concat(variables('factoryId'), '/linkedServices/ls_azure_sql_database')]"
 			]
 		}
 	]
