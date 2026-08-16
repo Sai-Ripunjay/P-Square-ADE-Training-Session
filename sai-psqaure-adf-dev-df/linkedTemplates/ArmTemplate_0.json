@@ -27,17 +27,17 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_ablob_source'"
 		},
-		"ls_psqaure_ablob_dev_connectionString": {
+		"ls_azure_sql_database_password": {
 			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'ls_psqaure_ablob_dev'"
+			"metadata": "Secure string for 'password' of 'ls_azure_sql_database'"
 		},
 		"ls_blob_storage_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_blob_storage'"
 		},
-		"ls_azure_sql_database_password": {
+		"ls_psqaure_ablob_dev_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'ls_azure_sql_database'"
+			"metadata": "Secure string for 'connectionString' of 'ls_psqaure_ablob_dev'"
 		},
 		"LS_ADLSGen2_Orders_properties_typeProperties_url": {
 			"type": "string",
@@ -159,14 +159,23 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ls_psqaure_ablob_dev')]",
+			"name": "[concat(parameters('factoryName'), '/ls_azure_sql_database')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"type": "AzureBlobStorage",
+				"type": "AzureSqlDatabase",
 				"typeProperties": {
-					"connectionString": "[parameters('ls_psqaure_ablob_dev_connectionString')]"
+					"server": "[parameters('ls_azure_sql_database_properties_typeProperties_server')]",
+					"database": "[parameters('ls_azure_sql_database_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('ls_azure_sql_database_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('ls_azure_sql_database_password')]"
+					}
 				}
 			},
 			"dependsOn": []
@@ -185,23 +194,14 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ls_azure_sql_database')]",
+			"name": "[concat(parameters('factoryName'), '/ls_psqaure_ablob_dev')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"type": "AzureSqlDatabase",
+				"type": "AzureBlobStorage",
 				"typeProperties": {
-					"server": "[parameters('ls_azure_sql_database_properties_typeProperties_server')]",
-					"database": "[parameters('ls_azure_sql_database_properties_typeProperties_database')]",
-					"encrypt": "mandatory",
-					"trustServerCertificate": false,
-					"authenticationType": "SQL",
-					"userName": "[parameters('ls_azure_sql_database_properties_typeProperties_userName')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('ls_azure_sql_database_password')]"
-					}
+					"connectionString": "[parameters('ls_psqaure_ablob_dev_connectionString')]"
 				}
 			},
 			"dependsOn": []

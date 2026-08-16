@@ -20,13 +20,13 @@
 		"ls_ablob_source_connectionString": {
 			"value": ""
 		},
-		"ls_psqaure_ablob_dev_connectionString": {
+		"ls_azure_sql_database_password": {
 			"value": ""
 		},
 		"ls_blob_storage_connectionString": {
 			"value": ""
 		},
-		"ls_azure_sql_database_password": {
+		"ls_psqaure_ablob_dev_connectionString": {
 			"value": ""
 		},
 		"LS_ADLSGen2_Orders_properties_typeProperties_url": {
