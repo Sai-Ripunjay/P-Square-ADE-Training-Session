@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "orders_incompatible.csv",
+				"fileName": "orders_additional_columns.csv",
 				"container": "source"
 			},
 			"columnDelimiter": ",",
