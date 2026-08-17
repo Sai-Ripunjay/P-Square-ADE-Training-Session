@@ -32,8 +32,21 @@
 						"sqlWriterUseTableLock": false
 					},
 					"enableStaging": false,
-					"enableSkipIncompatibleRow": false,
+					"enableSkipIncompatibleRow": true,
 					"validateDataConsistency": false,
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Warning",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "ls_blob_storage",
+								"type": "LinkedServiceReference"
+							}
+						}
+					},
 					"translator": {
 						"type": "TabularTranslator",
 						"typeConversion": true,
